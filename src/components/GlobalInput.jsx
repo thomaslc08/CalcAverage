@@ -13,18 +13,28 @@ const Form = styled.form`
   display: flex;
 `;
 
-const SearchComponent = () => {
+const GlobalInput = () => {
   const gradesCtx = useContext(GradesContext);
 
   const [inputText, setInputText] = useState("");
+  const [error, setError] = useState({ error: false, message: "" });
 
   const handleChange = (e) => {
     setInputText(e);
-    console.log(inputText);
   };
+
   const submitHandler = (e) => {
     e.preventDefault();
-    gradesCtx.addGrade(inputText);
+
+    if (inputText === "") {
+      setError({ error: true, message: "You must enter something" });
+      console.log(error);
+      return;
+    }
+
+    const inputs = inputText.replace(/ /g, "").split(",");
+
+    gradesCtx.addGrade(inputs)
     setInputText("");
   };
 
@@ -46,4 +56,4 @@ const SearchComponent = () => {
   );
 };
 
-export default SearchComponent;
+export default GlobalInput;

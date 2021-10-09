@@ -1,3 +1,4 @@
+import { red } from "@mui/material/colors";
 import styled from "styled-components";
 
 const InputText = styled.input`
@@ -25,7 +26,7 @@ const InputText = styled.input`
   }
 `;
 
-const InputTextBar = (props: any) => {
+const InputTextBar = (props) => {
   return (
     <InputText
       value={props.value}

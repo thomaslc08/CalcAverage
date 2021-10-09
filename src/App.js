@@ -1,5 +1,5 @@
 import GlobalStyle from "./globalStyles";
-import SearchComponent from "./components/SearchComponent";
+import SearchComponent from "./components/GlobalInput";
 import Grades from "./components/GradesContainer";
 import OverallAverage from "./components/OverallAverage";
 import { GradesContextProvider } from "./store/gradesContext";
