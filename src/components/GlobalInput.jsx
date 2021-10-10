@@ -5,16 +5,30 @@ import { Fragment, useContext, useRef } from "react";
 import Button from "./Button";
 import InputTextBar from "./InputTextBar";
 import GradesContext from "../store/gradesContext";
+import DarkModeContext from "../store/darkModeContext";
 
 const Wrapper = styled.div`
-  padding: 1rem;
+  /* padding: 1rem; */
 `;
 const Form = styled.form`
   display: flex;
+
+  & > Button {
+    margin-left: 1rem;
+  }
+  @media screen and (max-width: 1070px) {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    & > Button {
+      margin: 0;
+    }
+  }
 `;
 
 const GlobalInput = () => {
   const gradesCtx = useContext(GradesContext);
+  const darkModeCtx = useContext(DarkModeContext);
 
   const [inputText, setInputText] = useState("");
   const [error, setError] = useState({ error: false, message: "" });
@@ -26,15 +40,9 @@ const GlobalInput = () => {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (inputText === "") {
-      setError({ error: true, message: "You must enter something" });
-      console.log(error);
-      return;
-    }
-
     const inputs = inputText.replace(/ /g, "").split(",");
-
-    gradesCtx.addGrade(inputs)
+    console.log(inputs);
+    gradesCtx.addGrade(inputs);
     setInputText("");
   };
 
@@ -43,15 +51,16 @@ const GlobalInput = () => {
       <Form onSubmit={submitHandler}>
         <InputTextBar
           value={inputText}
+          isDark={darkModeCtx.isDark}
           handleChange={handleChange}
           placeholder="Subject, grade, coefficient"
         />
-        <Button>Add</Button>
+        <Button isDark={darkModeCtx.isDark}>Add</Button>
       </Form>
-      <p>
+      {/* <p>
         For each subject, enter the title, your grade and coefficient separated
         by a comma
-      </p>
+      </p> */}
     </Wrapper>
   );
 };

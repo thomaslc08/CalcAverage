@@ -2,18 +2,18 @@ import React, { useState } from "react";
 
 const DarkModeContext = React.createContext({
   isDark: false,
-  toggleDarkMode: () => {},
+  setDark: (boolean) => {},
 });
 
 export const DarkModeContextProvider = (props) => {
   const [isDark, setIsDark] = useState(false);
+  console.log(isDark);
 
-  const toggleDarkMode = (inputText) => {};
   return (
     <DarkModeContext.Provider
       value={{
         isDark: isDark,
-        toggleDarkMode: toggleDarkMode,
+        setDark: setIsDark,
       }}
     >
       {props.children}

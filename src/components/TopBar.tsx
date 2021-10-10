@@ -8,8 +8,17 @@ import DarkModeContext from "../store/darkModeContext";
 const StyledTopBar = styled.div`
   height: 2rem;
   display: flex;
-  flex-direction: row-reverse;
-  padding: 10px 2rem;
+  justify-content: flex-end;
+  /* flex-direction: row-reverse; */
+  padding: 2rem 0;
+  align-items: center;
+
+  h1 {
+    flex: 1;
+    font-weight: 700;
+    font-size: 2rem;
+    /* font-family: "Futura"; */
+  }
 `;
 
 const Button = styled.button`
@@ -18,19 +27,20 @@ const Button = styled.button`
 `;
 
 const TopBar = () => {
-  const [isDarkMode, setisDarkMode] = useState(false);
+  const darkModeCtx = useContext(DarkModeContext);
 
   const handleClick = () => {
-    if (!isDarkMode) {
-      setisDarkMode(true);
-    } else setisDarkMode(false);
+    if (!darkModeCtx.isDark) {
+      darkModeCtx.setDark(true);
+    } else darkModeCtx.setDark(false);
   };
 
   return (
     <StyledTopBar>
+      {/* <h1>Calc Average</h1> */}
       <Button onClick={handleClick}>
         <DarkModeOutlined
-          sx={{ fontSize: 30, color: isDarkMode ? "white" : "black" }}
+          sx={{ fontSize: 30, color: darkModeCtx.isDark ? "white" : "black" }}
         />
       </Button>
     </StyledTopBar>

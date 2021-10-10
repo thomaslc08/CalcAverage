@@ -8,115 +8,105 @@ const GradesContext = React.createContext({
       coeff: 0,
     },
   ],
-  totalCoeff: 0,
   overallAverage: 0,
+  totalCoeff: 0,
   addGrade: (enteredValues) => {},
   updateOverallAverage: (enteredValues) => {},
 });
 
 export const GradesContextProvider = (props) => {
-  const [grades, setGrades] = useState([
-    {
-      subject: "",
-      grade: 0,
-      coeff: 0,
-    },
-  ]);
-
+  // Setting up states
+  const [grades, setGrades] = useState([]);
   const [overallAverage, setOverallAverage] = useState(0);
+  const [totalCoeff, setTotalCoeff] = useState(0);
+
+  // Add grade to array
 
   const addGrade = (inputs) => {
-    let newGrade;
+    const checkGrade = () => {
+      const defaultSubject = "Subject " + (grades.length + 1);
 
-    switch (inputs.length) {
-      case 0:
-        console.log("object");
-        break;
+      if (inputs === "") return;
+      if (inputs.length === 1 && isNaN(inputs[0])) return;
+      if (inputs[0] > 20) return;
 
-      case 1:
-        if (isNaN(inputs[0])) {
-          newGrade = {
-            subject: inputs[0],
-            grade: 0,
-            coeff: 0,
-          };
-        }
-        if (!isNaN(inputs[0])) {
-          if (inputs[1] > 20) {
-            newGrade = {
-              subject: "",
-              grade: null,
-              coeff: null,
-            };
-            return;
-          }
-          newGrade = {
-            subject: "Subject " + grades.length,
-            grade: Number(inputs[0]),
-            coeff: 1,
-          };
-        }
-        break;
+      // Inputs = 1
 
-      case 2:
-        if (inputs[1] > 20) {
-          newGrade = {
-            subject: "",
-            grade: null,
-            coeff: null,
-          };
-        }
-        newGrade = {
+      if (inputs.length === 1)
+        return {
+          subject: defaultSubject,
+          grade: Number(inputs[0]),
+          coeff: 1,
+        };
+
+      // Inputs = 2
+
+      // If input[0] = string => subject + grade
+      // if input[0] = number => grade + coeff
+
+      if (inputs.length === 2 && isNaN(inputs[0])) {
+        return {
           subject: inputs[0],
           grade: Number(inputs[1]),
           coeff: 1,
         };
-        break;
+      }
+      if (inputs.length === 2 && !isNaN(inputs[0])) {
+        return {
+          subject: defaultSubject,
+          grade: Number(inputs[0]),
+          coeff: Number(inputs[1]),
+        };
+      }
 
-      case 3:
-        if (inputs[1] > 20) {
-          newGrade = {
-            subject: "",
-            grade: null,
-            coeff: null,
-          };
-        }
-        newGrade = {
+      // Inputs = 3
+
+      if (inputs.length === 3) {
+        return {
           subject: inputs[0],
           grade: Number(inputs[1]),
           coeff: Number(inputs[2]),
         };
-        break;
+      }
+    };
 
-      default:
-        newGrade = {
-          subject: inputs[0],
-          grade: Number(inputs[0]),
-          coeff: Number(inputs[2]),
-        };
-        break;
-    }
-    setGrades([...grades, newGrade]);
+    const newGrade = checkGrade();
+
+    // Add grade only if there's a new grade
+    if (newGrade) setGrades([...grades, newGrade]);
   };
 
+  // Update the overall average
   const updateOverallAverage = (params) => {
-    const averageGrades = grades
-      .map((grade) => grade.grade * grade.coeff)
-      .reduce(function (acc, cur) {
-        return acc + cur;
-      });
+    if (grades.length === 0) return;
 
-    const coeffSum = grades
-      .map((grade) => grade.coeff)
-      .reduce(function (acc, cur) {
-        return acc + cur;
-      });
+    const average =
+      grades
+        .map((grade) => grade.grade * grade.coeff)
+        .reduce(function (acc, cur) {
+          return acc + cur;
+        }) /
+      grades
+        .map((grade) => grade.coeff)
+        .reduce(function (acc, cur) {
+          return acc + cur;
+        });
 
-    const average = averageGrades / coeffSum;
+    const roundedAverage = Math.round(average * 100) / 100;
 
-    setOverallAverage(average);
+    console.log(totalCoeff);
+
+    setOverallAverage(roundedAverage);
+    setTotalCoeff(
+      grades
+        .map((grade) => grade.coeff)
+        .reduce(function (acc, cur) {
+          return acc + cur;
+        })
+    );
   };
 
+  // Update the overall average as soon as grades are updated
   useEffect(() => {
     updateOverallAverage();
   }, [grades]);
@@ -127,6 +117,7 @@ export const GradesContextProvider = (props) => {
         addGrade: addGrade,
         overallAverage: overallAverage,
         grades: grades,
+        totalCoeff: totalCoeff,
       }}
     >
       {props.children}

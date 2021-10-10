@@ -2,10 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { DarkModeContextProvider } from "./store/darkModeContext";
+import { GradesContextProvider } from "./store/gradesContext";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <DarkModeContextProvider>
+      <GradesContextProvider>
+        <App />
+      </GradesContextProvider>
+    </DarkModeContextProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
