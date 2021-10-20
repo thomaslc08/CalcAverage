@@ -1,17 +1,18 @@
-import { red } from "@mui/material/colors";
 import styled from "styled-components";
 
 const InputText = styled.input`
   flex: 1;
+  box-sizing: border-box;
   border: none;
   background: ${(props) => (props.isDark ? "#373f4b" : "#f2f4f8")};
   font-family: inherit;
   border-radius: 12px;
   font-size: 1rem;
-  transition: 0.3s ease-out;
+  /* transition:  0.3s ease-out; */
   /* text-indent: 5px; */
   padding: 1.4rem;
-
+  width: 100%;
+  transition: all 5ms ease-in-out;
 
   &:hover {
     /* background: #420000; */
@@ -37,9 +38,9 @@ const InputText = styled.input`
 const InputTextBar = (props) => {
   return (
     <InputText
+      autoFocus={props.autoFocus}
       value={props.value}
       onChange={(e) => props.handleChange(e.target.value)}
-      autoFocus
       isDark={props.isDark}
       type="text"
       placeholder={props.placeholder}

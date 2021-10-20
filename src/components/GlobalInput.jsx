@@ -1,17 +1,14 @@
 import styled from "styled-components";
 import { useState } from "react";
 
-import { Fragment, useContext, useRef } from "react";
-import Button from "./Button";
 import InputTextBar from "./InputTextBar";
-import GradesContext from "../store/gradesContext";
-import DarkModeContext from "../store/darkModeContext";
 
 const Wrapper = styled.div`
-  /* padding: 1rem; */
+  width: 100%;
 `;
 const Form = styled.form`
   display: flex;
+  /* transition: all 3ms ease-in-out; */
 
   & > Button {
     margin-left: 1rem;
@@ -26,12 +23,8 @@ const Form = styled.form`
   }
 `;
 
-const GlobalInput = () => {
-  const gradesCtx = useContext(GradesContext);
-  const darkModeCtx = useContext(DarkModeContext);
-
+const GlobalInput = (props) => {
   const [inputText, setInputText] = useState("");
-  const [error, setError] = useState({ error: false, message: "" });
 
   const handleChange = (e) => {
     setInputText(e);
@@ -39,10 +32,7 @@ const GlobalInput = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-
-    const inputs = inputText.replace(/ /g, "").split(",");
-    console.log(inputs);
-    gradesCtx.addGrade(inputs);
+    props.onSubmit(inputText);
     setInputText("");
   };
 
@@ -50,12 +40,13 @@ const GlobalInput = () => {
     <Wrapper>
       <Form onSubmit={submitHandler}>
         <InputTextBar
+          autoFocus="true"
           value={inputText}
-          isDark={darkModeCtx.isDark}
+          isDark={props.darkMode}
           handleChange={handleChange}
-          placeholder="Subject, grade, coefficient"
+          placeholder={"Subject, grade, coefficient"}
         />
-        <Button isDark={darkModeCtx.isDark}>Add</Button>
+        {/* <Button>Add</Button> */}
       </Form>
       {/* <p>
         For each subject, enter the title, your grade and coefficient separated

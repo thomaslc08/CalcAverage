@@ -1,17 +1,22 @@
-import { Fragment } from "react";
+import { Fragment, useLayoutEffect } from "react";
 import GlobalStyle from "./globalStyles";
-import SearchComponent from "./components/GlobalInput";
 import Grades from "./components/GradesContainer";
 import OverallAverage from "./components/OverallAverage";
 import TopBar from "./components/TopBar";
 
 import styled from "styled-components";
 import DarkModeContext from "./store/darkModeContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
+import GlobalInput from "./components/GlobalInput";
+import GradesContext from "./store/gradesContext";
+import Modal from "./components/Modal";
+import useModal from "./hooks/useModal";
 
 const Section = styled.section`
   display: flex;
-  margin: 3rem 0;
+  justify-content: space-between;
+
+  margin-top: 3rem;
   @media screen and (max-width: 1070px) {
     flex-direction: column-reverse;
   }
@@ -19,26 +24,29 @@ const Section = styled.section`
 
 function App() {
   const darkModeCtx = useContext(DarkModeContext);
+  const { isShowing, toggle } = useModal();
 
-  const handleKeyPress = (e) => {
-    if (e.key === "b" && darkModeCtx.isDark === false) {
-      darkModeCtx.setDark(true);
-    } else darkModeCtx.setDark(false);
+  useLayoutEffect(() => {
+    const isDark = localStorage.getItem("darkMode");
+    isDark === "true" && darkModeCtx.setDark(true);
+  }, [darkModeCtx]);
+
+  const gradesCtx = useContext(GradesContext);
+
+  const addGrade = (inputText) => {
+    gradesCtx.addGrade(inputText);
   };
-
-  // useEffect(() => {
-  //   darkModeCtx.setDark(true);
-  // }, [darkModeCtx.isDark]);
-  // console.log(darkModeCtx.isDark);
 
   return (
     <Fragment>
+      <button onClick={toggle}></button>
       <GlobalStyle isDark={darkModeCtx.isDark} />
+      <Modal isShowing={isShowing} hide={toggle} />
       <TopBar />
-      <SearchComponent />
+      <GlobalInput onSubmit={addGrade} darkMode={darkModeCtx.isDark} />
       <Section>
         <Grades />
-        <OverallAverage />
+        <OverallAverage isDark={darkModeCtx.isDark} />
       </Section>
     </Fragment>
   );

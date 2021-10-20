@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { DarkModeOutlined } from "@mui/icons-material";
 import DarkModeContext from "../store/darkModeContext";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import GradesContext from "../store/gradesContext";
 
 // const darkModeCtx = useContext(DarkModeContext);
 
@@ -28,17 +30,28 @@ const Button = styled.button`
 
 const TopBar = () => {
   const darkModeCtx = useContext(DarkModeContext);
+  const gradesCtx = useContext(GradesContext);
 
-  const handleClick = () => {
+  const handleDarkMode = () => {
     if (!darkModeCtx.isDark) {
       darkModeCtx.setDark(true);
-    } else darkModeCtx.setDark(false);
+    } else {
+      darkModeCtx.setDark(false);
+    }
   };
 
+  const handleRefresh = () => {
+    gradesCtx.resetGrades();
+  };
   return (
     <StyledTopBar>
       {/* <h1>Calc Average</h1> */}
-      <Button onClick={handleClick}>
+      <Button onClick={handleRefresh}>
+        <RefreshIcon
+          sx={{ fontSize: 30, color: darkModeCtx.isDark ? "white" : "black" }}
+        />
+      </Button>
+      <Button onClick={handleDarkMode}>
         <DarkModeOutlined
           sx={{ fontSize: 30, color: darkModeCtx.isDark ? "white" : "black" }}
         />

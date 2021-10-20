@@ -2,31 +2,27 @@ import styled from "styled-components";
 
 const StyledButton = styled.button`
   font-size: 1rem;
-  background: ${(props) => (props.isDark ? "#12161a" : "#19191b")};
+  background: ${(props) => (props.isDark ? "#121a13" : "#19191b")};
   border-radius: 12px;
   color: white;
-  /* margin: 1px 16px; */
   padding: 24px;
   margin: 0;
   border: none;
   font-weight: 500;
   font-family: inherit;
-  transition: 0.3ms ease-out;
-  transition-duration: 0.2s;
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  user-select: none;
-  touch-action: manipulation;
-  &:hover {
-    background-color: #374151;
+
+
+  &:active {
+    transition: 0.1s ease-out;
+
+    background: ${(props) => (props.isDark ? "#374350" : "#44444b")};
   }
-  &:focus {
-    box-shadow: none;
-    outline: 2px solid white;
-    outline-offset: 2px;
-  }
-  @media screen and (max-width: 1070px) {
-    padding: 1rem 0;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transition: 0.1s ease-out;
+      background: ${(props) => (props.isDark ? "#374350" : "#44444b")};
+    }
   }
 `;
 

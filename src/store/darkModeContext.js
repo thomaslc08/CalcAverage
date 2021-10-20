@@ -7,13 +7,16 @@ const DarkModeContext = React.createContext({
 
 export const DarkModeContextProvider = (props) => {
   const [isDark, setIsDark] = useState(false);
-  console.log(isDark);
 
+  const setDark = (props) => {
+    setIsDark(props);
+    localStorage.setItem("darkMode", `${props}`);
+  };
   return (
     <DarkModeContext.Provider
       value={{
         isDark: isDark,
-        setDark: setIsDark,
+        setDark: setDark,
       }}
     >
       {props.children}

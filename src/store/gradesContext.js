@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 const GradesContext = React.createContext({
   grades: [
     {
+      id: 0,
       subject: "",
       grade: 0,
       coeff: 0,
@@ -10,75 +11,147 @@ const GradesContext = React.createContext({
   ],
   overallAverage: 0,
   totalCoeff: 0,
-  addGrade: (enteredValues) => {},
-  updateOverallAverage: (enteredValues) => {},
+  addGrade: (input) => {},
+  updateGrade: (input, id) => {},
+  updateOverallAverage: (input) => {},
+  resetGrades: () => {},
 });
 
 export const GradesContextProvider = (props) => {
   // Setting up states
   const [grades, setGrades] = useState([]);
+  const [totalGrades, setTotalGrades] = useState(0);
   const [overallAverage, setOverallAverage] = useState(0);
   const [totalCoeff, setTotalCoeff] = useState(0);
 
-  // Add grade to array
+  const multipleInputsToArray = (input) => {
+    return input.split(";").map((input) => input.replace(/\s*$/, ""));
+  };
 
-  const addGrade = (inputs) => {
-    const checkGrade = () => {
-      const defaultSubject = "Subject " + (grades.length + 1);
+  const inputToArray = (input) => {
+    return input.split(",").map((input) => input.replace(/\s*$/, ""));
+  };
 
-      if (inputs === "") return;
-      if (inputs.length === 1 && isNaN(inputs[0])) return;
-      if (inputs[0] > 20) return;
+  const checkGrade = (input, key) => {
+    try {
+      const defaultSubject = "Subject " + key;
 
-      // Inputs = 1
+      if (input[0] === "") throw new Error("Please enter a value");
+      if (Number(input[0] > 20)) return;
+      if (Number(input[1] > 20)) return;
+      // input = 1
 
-      if (inputs.length === 1)
+      if (input.length === 1) {
+        if (isNaN(input[0])) return;
+
         return {
+          id: key,
           subject: defaultSubject,
-          grade: Number(inputs[0]),
+          grade: Number(input[0]),
           coeff: 1,
         };
+      }
 
-      // Inputs = 2
+      // input = 2
 
+      // If input [1] = string => return
       // If input[0] = string => subject + grade
       // if input[0] = number => grade + coeff
 
-      if (inputs.length === 2 && isNaN(inputs[0])) {
+      if (input.length === 2) {
+        if (isNaN(input[1])) return;
+        if (isNaN(input[0])) {
+          return {
+            id: key,
+            subject: input[0],
+            grade: Number(input[1]),
+            coeff: 1,
+          };
+        }
+        if (!isNaN(input[0])) {
+          return {
+            id: key,
+            subject: defaultSubject,
+            grade: Number(input[0]),
+            coeff: Number(input[1]),
+          };
+        }
+      }
+
+      // input = 3
+
+      if (input.length === 3) {
+        console.log(input);
+        if (isNaN(input[2]) || isNaN(input[1])) return;
+
         return {
-          subject: inputs[0],
-          grade: Number(inputs[1]),
-          coeff: 1,
+          id: key,
+          subject: input[0],
+          grade: Number(input[1]),
+          coeff: Number(input[2]),
         };
       }
-      if (inputs.length === 2 && !isNaN(inputs[0])) {
-        return {
-          subject: defaultSubject,
-          grade: Number(inputs[0]),
-          coeff: Number(inputs[1]),
-        };
-      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
-      // Inputs = 3
+  // ADD GRADE
 
-      if (inputs.length === 3) {
-        return {
-          subject: inputs[0],
-          grade: Number(inputs[1]),
-          coeff: Number(inputs[2]),
-        };
-      }
-    };
+  const addGrade = (input) => {
+    const newGrades = multipleInputsToArray(input).map((arrayEl, i) => {
+      const gradeToCheck = inputToArray(arrayEl);
+      const newGrade = checkGrade(gradeToCheck, totalGrades + i + 1);
+      return newGrade;
+    });
 
-    const newGrade = checkGrade();
+    if (newGrades[0]) {
+      setGrades(grades.concat(newGrades));
+      setTotalGrades(totalGrades + 1);
+    } else console.log("error");
+  };
 
-    // Add grade only if there's a new grade
-    if (newGrade) setGrades([...grades, newGrade]);
+  // UPDATE GRADE
+
+  const updateGrade = (input, id) => {
+    console.log(input);
+    if (input === "") {
+      setGrades([...grades]);
+      return;
+    }
+
+    const index = grades.findIndex((el) => el.id === id);
+    grades.splice(index, 1);
+
+    const gradeArray = inputToArray(input);
+
+    const updatedGrade = checkGrade(gradeArray, id);
+
+    if (!updatedGrade) return;
+
+    const sortedGrades = grades
+      .concat(updatedGrade)
+      .sort((a, b) => Number(a.id) - Number(b.id));
+    setGrades(sortedGrades);
   };
 
   // Update the overall average
-  const updateOverallAverage = (params) => {
-    if (grades.length === 0) return;
+
+  const resetGrades = () => {
+    setTotalGrades(0);
+    setGrades([]);
+    setTotalCoeff(0);
+    setOverallAverage(0);
+  };
+
+  // Update the overall average as soon as grades are updated
+  useEffect(() => {
+    setTotalGrades(grades.length);
+
+    if (grades.length === 0) {
+      setOverallAverage(0);
+      return;
+    }
 
     const average =
       grades
@@ -93,30 +166,29 @@ export const GradesContextProvider = (props) => {
         });
 
     const roundedAverage = Math.round(average * 100) / 100;
-
-    console.log(totalCoeff);
+    if (roundedAverage === "NaN") return;
 
     setOverallAverage(roundedAverage);
-    setTotalCoeff(
-      grades
-        .map((grade) => grade.coeff)
-        .reduce(function (acc, cur) {
-          return acc + cur;
-        })
-    );
-  };
 
-  // Update the overall average as soon as grades are updated
-  useEffect(() => {
-    updateOverallAverage();
+    if (grades.length > 0) {
+      setTotalCoeff(
+        grades
+          .map((grade) => grade.coeff)
+          .reduce(function (acc, cur) {
+            return acc + cur;
+          })
+      );
+    } else setTotalCoeff(0);
   }, [grades]);
 
   return (
     <GradesContext.Provider
       value={{
         addGrade: addGrade,
+        updateGrade: updateGrade,
         overallAverage: overallAverage,
         grades: grades,
+        resetGrades: resetGrades,
         totalCoeff: totalCoeff,
       }}
     >
