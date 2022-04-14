@@ -39,9 +39,9 @@ function App() {
 
   return (
     <Fragment>
-      <button onClick={toggle}></button>
+      {/* <button onClick={toggle}></button> */}
       <GlobalStyle isDark={darkModeCtx.isDark} />
-      <Modal isShowing={isShowing} hide={toggle} />
+      {/* <Modal isShowing={isShowing} hide={toggle} /> */}
       <TopBar />
       <GlobalInput onSubmit={addGrade} darkMode={darkModeCtx.isDark} />
       <Section>
