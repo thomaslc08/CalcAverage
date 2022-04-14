@@ -9,8 +9,8 @@ import DarkModeContext from "./store/darkModeContext";
 import { useContext } from "react";
 import GlobalInput from "./components/GlobalInput";
 import GradesContext from "./store/gradesContext";
-// import Modal from "./components/Modal";
-import useModal from "./hooks/useModal";
+// // import Modal from "./components/Modal";
+// import useModal from "./hooks/useModal";
 
 const Section = styled.section`
   display: flex;
