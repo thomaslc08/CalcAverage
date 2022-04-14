@@ -9,7 +9,7 @@ import DarkModeContext from "./store/darkModeContext";
 import { useContext } from "react";
 import GlobalInput from "./components/GlobalInput";
 import GradesContext from "./store/gradesContext";
-import Modal from "./components/Modal";
+// import Modal from "./components/Modal";
 import useModal from "./hooks/useModal";
 
 const Section = styled.section`
@@ -24,7 +24,7 @@ const Section = styled.section`
 
 function App() {
   const darkModeCtx = useContext(DarkModeContext);
-  const { isShowing, toggle } = useModal();
+  // const { isShowing, toggle } = useModal();
 
   useLayoutEffect(() => {
     const isDark = localStorage.getItem("darkMode");
